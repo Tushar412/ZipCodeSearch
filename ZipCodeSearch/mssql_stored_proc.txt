@@ -1,0 +1,29 @@
+CREATE PROCEDURE sp_ZipSearch
+@myZip varchar(5),
+@distance int
+
+AS
+
+SELECT o.ZipCode,
+	(3956 * (2 * ASIN(SQRT(
+		POWER(SIN(((z.Latitude-o.Latitude)*0.017453293)/2),2) +
+		COS(z.Latitude*0.017453293) *
+		COS(o.Latitude*0.017453293) *
+		POWER(SIN(((z.Longitude-o.Longitude)*0.017453293)/2),2)
+	)))) Distance
+
+FROM ZipCodes z,
+	ZipCodes o,
+	ZipCodes a
+
+WHERE z.ZipCode = @myZip  AND
+	z.ZipCode = a.ZipCode AND
+	(3956 * (2 * ASIN(SQRT(
+		POWER(SIN(((z.Latitude-o.Latitude)*0.017453293)/2),2) +
+		COS(z.Latitude*0.017453293) *
+		COS(o.Latitude*0.017453293) *
+		POWER(SIN(((z.Longitude-o.Longitude)*0.017453293)/2),2)
+	)))) <= @distance
+
+ORDER BY Distance
+GO

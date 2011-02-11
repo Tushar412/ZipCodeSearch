@@ -1,0 +1,24 @@
+# demo query for SQL searches for zipcodes
+# up to 50 miles away from zip 54915
+SELECT o.ZipCode, o.State,
+	(3956 * (2 * ASIN(SQRT(
+		POWER(SIN(((z.Latitude-o.Latitude)*0.017453293)/2),2) +
+		COS(z.Latitude*0.017453293) *
+		COS(o.Latitude*0.017453293) *
+		POWER(SIN(((z.Longitude-o.Longitude)*0.017453293)/2),2)
+	)))) AS Distance
+
+FROM ZipCodes z,
+	ZipCodes o,
+	ZipCodes a
+
+WHERE z.ZipCode = 54915  AND
+	z.ZipCode = a.ZipCode AND
+	(3956 * (2 * ASIN(SQRT(
+		POWER(SIN(((z.Latitude-o.Latitude)*0.017453293)/2),2) +
+		COS(z.Latitude*0.017453293) *
+		COS(o.Latitude*0.017453293) *
+		POWER(SIN(((z.Longitude-o.Longitude)*0.017453293)/2),2)
+	)))) <= 50
+
+ORDER BY Distance
